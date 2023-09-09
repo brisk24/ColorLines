@@ -68,6 +68,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -84,6 +85,27 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="logo.ico" />
+    <None Include="Resources\3s.png" />
+    <None Include="Resources\3n.png" />
+    <None Include="Resources\3b.png" />
+    <None Include="Resources\2s.png" />
+    <None Include="Resources\2n.png" />
+    <None Include="Resources\2b.png" />
+    <None Include="Resources\1s.png" />
+    <None Include="Resources\1n.png" />
+    <None Include="Resources\1b.png" />
+    <None Include="Resources\path.png" />
+    <None Include="Resources\empty.png" />
+    <None Include="Resources\ball.ico" />
+    <None Include="Resources\6s.png" />
+    <None Include="Resources\6n.png" />
+    <None Include="Resources\6b.png" />
+    <None Include="Resources\5s.png" />
+    <None Include="Resources\5n.png" />
+    <None Include="Resources\5b.png" />
+    <None Include="Resources\4s.png" />
+    <None Include="Resources\4n.png" />
+    <None Include="Resources\4b.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
