@@ -10,25 +10,30 @@ using System.Windows.Forms;
 
 namespace ColorLines
 {
+    public enum Item
+    {
+        none,
+        ball,
+        jump,
+        next,
+        path
+    }
+
+    public delegate void ShowItem(int x, int y, Item item, int color);
     public partial class Form1 : Form
     {
         int max = 9;
         int size = 60;
         PictureBox[,] box;
-        int[,] map;// 0-пусто, 1-6 шарик цвета N
+        Game game;
 
-        enum Item
-        {
-            none,
-            ball,
-            jump,
-            next,
-            path
-        }
+
+        
         public Form1()
         {
             InitializeComponent();
             CreateBoxes();
+            game = new Game(max, ShowItem);
             ShowItem(2, 3, Item.ball, 5);
             ShowItem(4, 2, Item.jump, 3);
             ShowItem(1, 6, Item.next, 2);
@@ -38,11 +43,10 @@ namespace ColorLines
         {
             panel.Size = new Size(size * max, size * max);
             box = new PictureBox[max, max];
-            map = new int[max, max];
+
             for (int x = 0; x < max; x++)
                 for (int y = 0; y < max; y++)
                 {
-                    map[x, y] = 0;
                     box[x, y] = new PictureBox();
                     box[x, y].BorderStyle = BorderStyle.FixedSingle;
                     box[x, y].Location = new Point(x * size, y * size);
