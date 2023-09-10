@@ -19,7 +19,14 @@ namespace ColorLines
         path
     }
 
-    public delegate void ShowItem(int x, int y, Item item, int color);
+    public struct Ball
+    {
+        public int x;
+        public int y;
+        public int color;
+    }
+
+    public delegate void ShowItem(Ball ball, Item item);
     public partial class Form1 : Form
     {
         int max = 9;
@@ -28,15 +35,13 @@ namespace ColorLines
         Game game;
 
 
-        
+
         public Form1()
         {
             InitializeComponent();
             CreateBoxes();
             game = new Game(max, ShowItem);
-            ShowItem(2, 3, Item.ball, 5);
-            ShowItem(4, 2, Item.jump, 3);
-            ShowItem(1, 6, Item.next, 2);
+            timer1.Enabled = true;
         }
 
         public void CreateBoxes()
@@ -108,22 +113,27 @@ namespace ColorLines
             return null;
         }
 
-        private void ShowItem(int x, int y, Item item, int color)
+        private void ShowItem(Ball ball, Item item)
         {
             Image image;
 
             switch (item)
             {
                 case Item.none: image = Properties.Resources.empty; break;
-                case Item.ball: image = imgBall(color); break;
-                case Item.jump: image = imgJump(color); break;
-                case Item.next: image = imgNext(color); break;
+                case Item.ball: image = imgBall(ball.color); break;
+                case Item.jump: image = imgJump(ball.color); break;
+                case Item.next: image = imgNext(ball.color); break;
                 case Item.path: image = Properties.Resources.path; break;
                 default: image = Properties.Resources.empty; break;
             }
 
 
-            box[x, y].Image = image;
+            box[ball.x, ball.y].Image = image;
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            game.Step();
         }
     }
 }
