@@ -67,7 +67,7 @@ namespace ColorLines
         private void ClickBox(object sender, EventArgs e)
         {
             Point xy = (Point)((PictureBox)sender).Tag;
-            MessageBox.Show($"{xy.X} {xy.Y}");
+            game.ClickBox(xy.X, xy.Y);
         }
 
 
@@ -89,12 +89,12 @@ namespace ColorLines
         {
             switch (nr)
             {
-                case 1: return Properties.Resources._1s;
-                case 2: return Properties.Resources._2s;
-                case 3: return Properties.Resources._3s;
-                case 4: return Properties.Resources._4s;
-                case 5: return Properties.Resources._5s;
-                case 6: return Properties.Resources._6s;
+                case 1: return Properties.Resources._1n;
+                case 2: return Properties.Resources._2n;
+                case 3: return Properties.Resources._3n;
+                case 4: return Properties.Resources._4n;
+                case 5: return Properties.Resources._5n;
+                case 6: return Properties.Resources._6n;
             }
             return null;
         }
@@ -103,12 +103,12 @@ namespace ColorLines
         {
             switch (nr)
             {
-                case 1: return Properties.Resources._1n;
-                case 2: return Properties.Resources._2n;
-                case 3: return Properties.Resources._3n;
-                case 4: return Properties.Resources._4n;
-                case 5: return Properties.Resources._5n;
-                case 6: return Properties.Resources._6n;
+                case 1: return Properties.Resources._1s;
+                case 2: return Properties.Resources._2s;
+                case 3: return Properties.Resources._3s;
+                case 4: return Properties.Resources._4s;
+                case 5: return Properties.Resources._5s;
+                case 6: return Properties.Resources._6s;
             }
             return null;
         }

@@ -27,7 +27,7 @@ namespace ColorLines
             stop        // поле заполнено, конец игры
         }
 
-       
+
         public Game(int max, ShowItem Show)
         {
             this.max = max;
@@ -36,9 +36,27 @@ namespace ColorLines
             status = Status.init;
         }
 
+
+        Ball marked_ball;
+        int marked_jump;
         public void ClickBox(int x, int y)
         {
-
+            if (status == Status.wait || status == Status.ball_mark)
+            {
+                if (map[x, y] > 0)
+                {
+                    if (status == Status.ball_mark)
+                    {
+                        Show(marked_ball, Item.ball);
+                    }
+                    marked_ball.x = x;
+                    marked_ball.y = y;
+                    marked_ball.color = map[x, y];
+                    status = Status.ball_mark;
+                    marked_jump = 0;
+                    return;
+                }
+            }
         }
 
         public void Step()
@@ -67,8 +85,8 @@ namespace ColorLines
                 case Status.line_strip:
                     StripLine();
                     break;
-                //case Status.stop:
-                //    break;
+                    //case Status.stop:
+                    //    break;
             }
         }
 
@@ -84,7 +102,12 @@ namespace ColorLines
 
         private void JumpBall()
         {
-            throw new NotImplementedException();
+            if (status != Status.ball_mark) return;
+            if (marked_jump == 0)
+                Show(marked_ball, Item.jump);
+            else
+                Show(marked_ball, Item.ball);
+            marked_jump = 1 - marked_jump;
         }
 
         private void ShowNextBalls()
@@ -125,7 +148,7 @@ namespace ColorLines
                 {
                     next.x = -1;
                     return next;
-                }    
+                }
             } while (map[next.x, next.y] != 0);
             map[next.x, next.y] = -1;
             Show(next, Item.next);
