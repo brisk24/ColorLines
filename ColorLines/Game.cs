@@ -118,6 +118,19 @@ namespace ColorLines
                 path_step++;
                 return;
             }
+            Ball moving_ball;
+            
+            moving_ball = path[path_step - 1];
+            Show(moving_ball, Item.none);
+
+            moving_ball = path[path_step];
+            moving_ball.color = destin_ball.color;
+            Show(moving_ball, Item.ball);
+
+            path_step++;
+
+            if (path_step > paths)
+                status = Status.ball_move;
         }
 
         private void MoveBall()
