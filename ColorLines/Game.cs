@@ -91,7 +91,7 @@ namespace ColorLines
                     JumpBall();
                     break;
                 case Status.path_show:
-                    
+                    PathShow();
                     break;
                 case Status.ball_move:
                     MoveBall();
@@ -108,7 +108,17 @@ namespace ColorLines
             }
         }
 
-
+        int path_step;
+        private void PathShow()
+        {
+            if(path_step==0)
+            {
+                for (int nr = 1; nr <= paths; nr++)
+                    Show(path[nr], Item.path);
+                path_step++;
+                return;
+            }
+        }
 
         private void MoveBall()
         {
@@ -245,6 +255,7 @@ namespace ColorLines
                     if (IsPath(px, py - 1, nr)) py--;
                 nr--;
             }
+            path_step = 0;
             return true;
         }
 
