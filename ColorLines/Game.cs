@@ -32,8 +32,10 @@ namespace ColorLines
         {
             this.max = max;
             map = new int[max, max];
+            fmap = new int[max, max];
             this.Show = Show;
             status = Status.init;
+            path = new Ball[81];
         }
 
 
@@ -59,14 +61,16 @@ namespace ColorLines
                 }
             }
 
-            if(status == Status.ball_mark)
+            if (status == Status.ball_mark)
                 if (map[x, y] <= 0)
                 {
                     destin_ball.x = x;
                     destin_ball.y = y;
                     destin_ball.color = marked_ball.color;
-                    status = Status.ball_move;
-                    return;
+                    if (FindPath())
+                        status = Status.path_show;
+                    else
+                        return;
                 }
 
         }
@@ -86,14 +90,15 @@ namespace ColorLines
                 case Status.ball_mark:
                     JumpBall();
                     break;
-                //case Status.path_show:
-                //    break;
+                case Status.path_show:
+                    
+                    break;
                 case Status.ball_move:
                     MoveBall();
                     break;
                 case Status.next_balls:
                     ShowNextBalls();
-                    SelectNextBalls();                 
+                    SelectNextBalls();
                     break;
                 case Status.line_strip:
                     StripLine();
@@ -103,10 +108,7 @@ namespace ColorLines
             }
         }
 
-        private void StripLine()
-        {
-            throw new NotImplementedException();
-        }
+
 
         private void MoveBall()
         {
@@ -155,7 +157,7 @@ namespace ColorLines
         {
             ball[0] = SelectNextBall();
             ball[1] = SelectNextBall();
-            ball[2] = SelectNextBall();          
+            ball[2] = SelectNextBall();
         }
 
         Ball SelectNextBall()
@@ -180,6 +182,94 @@ namespace ColorLines
             map[next.x, next.y] = -1;
             Show(next, Item.next);
             return next;
+        }
+
+        int[,] fmap;
+        Ball[] path;
+        int paths;
+
+        private bool FindPath()
+        {
+            if (!(map[marked_ball.x, marked_ball.y] > 0 &&
+                map[destin_ball.x, destin_ball.y] <= 0))
+                return false;
+
+            for (int x = 0; x < max; x++)
+                for (int y = 0; y < max; y++)
+                    fmap[x, y] = 0;
+            bool added;
+            bool found = false;
+            fmap[marked_ball.x, marked_ball.y] = 1;
+            int nr = 1;
+            do
+            {
+                added = false;
+
+                for (int x = 0; x < max; x++)
+                    for (int y = 0; y < max; y++)
+                        if (fmap[x, y] == nr)
+                        {
+                            MarkPath(x + 1, y, nr + 1);
+                            MarkPath(x - 1, y, nr + 1);
+                            MarkPath(x, y + 1, nr + 1);
+                            MarkPath(x, y - 1, nr + 1);
+                            added = true;
+                        }
+                if (fmap[destin_ball.x, destin_ball.y] > 0)
+                {
+                    found = true;
+                    break;
+                }
+                nr++;
+            } while (added);
+            if (!found)
+                return false;
+
+            int px = destin_ball.x;
+            int py = destin_ball.y;
+
+
+            paths = nr;
+
+            while (nr >= 0)
+            {
+                path[nr].x = px;
+                path[nr].y = py;
+
+                if (IsPath(px + 1, py, nr)) px++;
+                else
+                    if (IsPath(px - 1, py, nr)) px--;
+                else
+                    if (IsPath(px, py + 1, nr)) py++;
+                else
+                    if (IsPath(px, py - 1, nr)) py--;
+                nr--;
+            }
+            return true;
+        }
+
+        private bool IsPath(int x, int y, int k)
+        {
+            if (x < 0 || x >= max) return false;
+            if (y < 0 || y >= max) return false;
+
+            return fmap[x, y] == k;
+        }
+
+        private void MarkPath(int x, int y, int k)
+        {
+            if (x < 0 || x >= max) return;
+            if (y < 0 || y >= max) return;
+
+            if (map[x, y] > 0) return;
+            if (fmap[x, y] > 0) return;
+
+            fmap[x, y] = k;
+        }
+
+        private void StripLine()
+        {
+            throw new NotImplementedException();
         }
     }
 }
