@@ -133,6 +133,7 @@ namespace ColorLines
             {
                 for (int j = 0; j < strips; j++)
                     map[strip[j].x, strip[j].y] = 0;
+                HintNextBalls();
                 status = Status.wait;
                 return;
             }
@@ -174,7 +175,10 @@ namespace ColorLines
             path_step++;
 
             if (path_step > paths)
+            {
+                HintNextBalls();
                 status = Status.ball_move;
+            }
         }
 
         private void MoveBall()
@@ -227,6 +231,20 @@ namespace ColorLines
                     if (map[x, y] <= 0)
                         return false;
             return true;
+        }
+
+
+        private void HintNextBalls()
+        {
+            HintNextBall(ball[0]);
+            HintNextBall(ball[1]);
+            HintNextBall(ball[2]);
+        }
+
+        private void HintNextBall(Ball next)
+        {
+            if (next.x < 0) return;
+            Show(next, Item.next);
         }
 
         private void ShowNextBall(Ball next)
