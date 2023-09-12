@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ColorLines
 {
@@ -36,8 +37,23 @@ namespace ColorLines
             this.Show = Show;
             status = Status.init;
             path = new Ball[81];
+            strip = new Ball[99];
         }
 
+        private void InitMap()
+        {
+            Ball none;
+            none.color = 0;
+
+            for (int x = 0; x < max; x++)
+                for (int y = 0; y < max; y++)
+                {
+                    map[x, y] = 0;
+                    none.x = x;
+                    none.y = y;
+                    Show(none, Item.none);
+                }
+        }
 
         Ball marked_ball;
         Ball destin_ball;
@@ -72,7 +88,8 @@ namespace ColorLines
                     else
                         return;
                 }
-
+            if((status == Status.stop))
+                status = Status.init;
         }
 
         public void Step()
@@ -80,6 +97,7 @@ namespace ColorLines
             switch (status)
             {
                 case Status.init:
+                    InitMap();
                     SelectNextBalls();
                     ShowNextBalls();
                     SelectNextBalls();
@@ -101,17 +119,43 @@ namespace ColorLines
                     SelectNextBalls();
                     break;
                 case Status.line_strip:
-                    StripLine();
+                    StripLines();
                     break;
-                    //case Status.stop:
-                    //    break;
+                case Status.stop:
+
+                    break;
             }
+        }
+
+        private void StripLines()
+        {
+            if (strip_step <= 0)
+            {
+                for (int j = 0; j < strips; j++)
+                    map[strip[j].x, strip[j].y] = 0;
+                status = Status.wait;
+                return;
+            }
+
+            strip_step--;
+            for (int j = 0; j < strips; j++)
+            {
+                switch (strip_step)
+                {
+                    case 3: Show(strip[j], Item.jump); break;
+                    case 2: Show(strip[j], Item.ball); break;
+                    case 1: Show(strip[j], Item.next); break;
+                    case 0: Show(strip[j], Item.none); break;
+
+                }
+            }
+
         }
 
         int path_step;
         private void PathShow()
         {
-            if(path_step==0)
+            if (path_step == 0)
             {
                 for (int nr = 1; nr <= paths; nr++)
                     Show(path[nr], Item.path);
@@ -119,7 +163,7 @@ namespace ColorLines
                 return;
             }
             Ball moving_ball;
-            
+
             moving_ball = path[path_step - 1];
             Show(moving_ball, Item.none);
 
@@ -143,7 +187,11 @@ namespace ColorLines
                 map[destin_ball.x, destin_ball.y] = marked_ball.color;
                 Show(marked_ball, Item.none);
                 Show(destin_ball, Item.ball);
-                status = Status.next_balls;
+
+                if (FindStripLines())
+                    status = Status.line_strip;
+                else
+                    status = Status.next_balls;
             }
         }
 
@@ -162,8 +210,25 @@ namespace ColorLines
             ShowNextBall(ball[0]);
             ShowNextBall(ball[1]);
             ShowNextBall(ball[2]);
-            status = Status.wait;
+
+            if (FindStripLines())
+                status = Status.line_strip;
+            else
+                if (IsMapFull())
+                status = Status.stop;
+            else
+                status = Status.wait;
         }
+
+        private bool IsMapFull()
+        {
+            for (int x = 0; x < max; x++)
+                for (int y = 0; y < max; y++)
+                    if (map[x, y] <= 0)
+                        return false;
+            return true;
+        }
+
         private void ShowNextBall(Ball next)
         {
             if (next.x < 0) return;
@@ -291,9 +356,52 @@ namespace ColorLines
             fmap[x, y] = k;
         }
 
-        private void StripLine()
+        Ball[] strip;
+        int strips;
+        int strip_step;
+
+       
+
+        private bool FindStripLines()
         {
-            throw new NotImplementedException();
+            strips = 0;
+            for (int x = 0; x < max; x++)
+                for (int y = 0; y < max; y++)
+                {
+                    CheckLine(x, y, 1, 0);
+                    CheckLine(x, y, 1, 1);
+                    CheckLine(x, y, 0, 1);
+                    CheckLine(x, y, -1, 1);
+                }
+            if (strips == 0)
+                return false;
+            strip_step = 4;
+            return true;
+        }
+
+        private void CheckLine(int x, int y, int sx, int sy)
+        {
+            int p = 4;
+            if (x < 0 || x >= max) return;
+            if (y < 0 || y >= max) return;
+
+            if (x + p * sx < 0 || x + p * sx >= max) return;
+            if (y + p * sy < 0 || y + p * sy >= max) return;
+
+            int color = map[x, y];
+            if (color <= 0) return;
+
+            for (int k = 1; k <= p; k++)
+                if (map[x + k * sx, y + k * sy] != color)
+                    return;
+            for (int k = 0; k <= p; k++)
+            {
+                strip[strips].x = x + k * sx;
+                strip[strips].y = y + k * sy;
+                strip[strips].color = color;
+                strips++;
+
+            }
         }
     }
 }
