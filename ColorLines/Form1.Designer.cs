@@ -50,9 +50,10 @@
             // label1
             // 
             this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label1.Location = new System.Drawing.Point(807, 12);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(13, 13);
+            this.label1.Size = new System.Drawing.Size(19, 19);
             this.label1.TabIndex = 1;
             this.label1.Text = "0";
             // 
@@ -79,7 +80,7 @@
 
         private System.Windows.Forms.Panel panel;
         private System.Windows.Forms.Timer timer1;
-        public System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label1;
     }
 }
 
