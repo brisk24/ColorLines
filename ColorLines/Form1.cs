@@ -4,6 +4,7 @@ using System.Windows.Forms;
 
 namespace ColorLines
 {
+    
     public enum Item
     {
         none,
@@ -21,20 +22,21 @@ namespace ColorLines
     }
 
     public delegate void ShowItem(Ball ball, Item item);
+    public delegate void ShowPrice(int x);
     public partial class Form1 : Form
     {
         int max = 9;
         int size = 60;
         PictureBox[,] box;
         Game game;
-
+        int score = 0;
 
 
         public Form1()
         {
             InitializeComponent();
             CreateBoxes();
-            game = new Game(max, ShowItem);
+            game = new Game(max, ShowItem, ShowPrice);
             timer1.Enabled = true;
         }
 
@@ -125,9 +127,15 @@ namespace ColorLines
             box[ball.x, ball.y].Image = image;
         }
 
+        private void ShowPrice(int x)
+        {
+            score += x * 10;
+            label1.Text = score.ToString();
+        }
+
         private void timer1_Tick(object sender, EventArgs e)
         {
-            game.Step();
+            game.Step();           
         }
     }
 }

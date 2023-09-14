@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -13,6 +14,7 @@ namespace ColorLines
         int max_colors = 6;
         int max;
         ShowItem Show;
+        ShowPrice ShowPrice;
         Status status;
         Ball[] ball = new Ball[3];
         static Random random = new Random();
@@ -29,15 +31,18 @@ namespace ColorLines
         }
 
 
-        public Game(int max, ShowItem Show)
+        public Game(int max, ShowItem Show, ShowPrice showPrice)
         {
             this.max = max;
             map = new int[max, max];
             fmap = new int[max, max];
             this.Show = Show;
+            this.ShowPrice = showPrice;
             status = Status.init;
             path = new Ball[81];
             strip = new Ball[99];
+            
+
         }
 
         private void InitMap()
@@ -417,9 +422,9 @@ namespace ColorLines
                 strip[strips].x = x + k * sx;
                 strip[strips].y = y + k * sy;
                 strip[strips].color = color;
-                strips++;
-
+                strips++;              
             }
+            ShowPrice(strips);
         }
     }
 }
